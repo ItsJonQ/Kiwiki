@@ -1,4 +1,3 @@
-# Kiwiki
-( kiːwiː-kaɪ )
+# Qi
 
 A tiny MVC framework for Wordpress

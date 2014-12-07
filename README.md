@@ -1,3 +1,3 @@
 # Qi
 
-A tiny MVC framework for Wordpress
+A tiny MV* framework for Wordpress

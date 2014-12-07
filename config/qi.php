@@ -8,14 +8,20 @@ class Qi_ {
   public static function setup_config() {
 
     $config = array(
-      'relative_permalink'     => false
+      'post_thumbnails'         => true,
+      'relative_permalink'      => false
       );
 
     // Setting it to Qi's config
     self::$config = $config;
   }
 
-  //
+  // Post Thumbnails
+  public static function setup_post_thumbnails() {
+    if( self::$config['post_thumbnails'] ) {
+      add_theme_support( 'post-thumbnails' );
+    }
+  }
 
   public static function has_relative_permalink() {
     return self::$config['relative_permalink'];
@@ -23,6 +29,8 @@ class Qi_ {
 
   public static function initialize() {
     self::setup_config();
+
+    self::setup_post_thumbnails();
   }
 }
 

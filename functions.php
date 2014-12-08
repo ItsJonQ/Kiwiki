@@ -7,3 +7,7 @@
   // Models
   require_once( 'app/models/base.php' );
   require_once( 'app/models/post.php' );
+
+  // Views
+  require_once( 'app/views/base.php' );
+  require_once( 'app/views/post.php' );

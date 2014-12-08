@@ -7,9 +7,12 @@ if ( have_posts() ) :
         // Start the Loop.
   while ( have_posts() ) : the_post();
 
-$c = new PostModel();
 
-print_r($post->model);
+$vm = new PostView();
+
+print_r($vm);
+
+echo $vm->model->title;
 
 // the_content();
 

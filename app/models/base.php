@@ -12,6 +12,39 @@ class QiBaseModel {
     return $permalink;
   }
 
+  public function get_content( $content = null ) {
+    global $post;
+
+    if( !isset( $content ) ) {
+      $content = $post->post_content;
+    }
+
+    return $content;
+  }
+
+  public function get_date( $format = null ) {
+    global $post;
+
+    if( !isset( $format) ) {
+      $format = 'F j, Y';
+    }
+
+    // Getting the date
+    $date = get_the_date( $format, $post->ID );
+
+    return $date;
+  }
+
+  public function get_excerpt( $excerpt = null ) {
+    global $post;
+
+    if( !isset( $excerpt ) ) {
+      $excerpt = $post->post_excerpt;
+    }
+
+    return $excerpt;
+  }
+
   public function get_post_thumbnail_meta( $size = null ) {
     global $post;
 
@@ -57,6 +90,17 @@ class QiBaseModel {
     return $post_thumbnail;
   }
 
+  public function get_title( $title = null ) {
+    global $post;
+
+    if( !isset( $title ) ) {
+      $title = $post->post_title;
+    }
+
+    return $title;
+  }
+
+
   public function set_permalink( $permalink = "" ) {
     global $post;
 
@@ -78,18 +122,56 @@ class QiBaseModel {
     $featured_image = self::get_post_thumbnail_url();
 
     $this->featured_image_url = $featured_image;
+
+    return $featured_image;
   }
 
   public function set_post_thumbnail_url() {
     $post_thumbnail = self::get_post_thumbnail_url( 'thumbnail' );
 
     $this->post_thumbnail_url = $post_thumbnail;
+
+    return $post_thumbnail;
+  }
+
+  public function set_content( $content = null ) {
+    $content = self::get_content( $content );
+
+    $this->content = $content;
+
+    return $content;
+  }
+
+  public function set_date( $format = null  ) {
+    $date = self::get_date( $format );
+
+    $this->date = $date;
+
+    return $date;
+  }
+
+  public function set_excerpt( $excerpt = null ) {
+    $excerpt = self::get_excerpt( $excerpt );
+
+    $this->excerpt = $excerpt;
+
+    return $excerpt;
+  }
+
+  public function set_id() {
+    global $post;
+
+    $id = $post->ID;
+
+    $this->id = $id;
+
+    return $id;
   }
 
   public function set_title( $title = null ) {
     global $post;
 
-    $title = $post->post_title;
+    $title = self::get_title( $title );
 
     // Setting the title
     $this->title = $title;
@@ -111,10 +193,14 @@ class QiBaseModel {
 
     // Initialize
     self::set_model();
+    self::set_id();
 
     // Base
     self::set_permalink();
     self::set_title();
+    self::set_date();
+    self::set_content();
+    self::set_excerpt();
 
     // Image
     self::set_featured_image_url();

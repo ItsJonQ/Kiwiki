@@ -8,12 +8,20 @@ class Qi_ {
   public static function setup_config() {
 
     $config = array(
+      'theme'                   => 'qi',
+      'dir'                     => 'app',
+      'dir_templates'           => 'templates/',
+      'dir_partials'            => 'templates/partials',
       'post_thumbnails'         => true,
       'relative_permalink'      => true
       );
 
     // Setting it to Qi's config
     self::$config = $config;
+  }
+
+  public static function setup_dir() {
+    self::$config['dir'] = get_theme_root() . '/' . self::$config['theme'] . '/' . self::$config['dir'];
   }
 
   // Post Thumbnails
@@ -29,7 +37,7 @@ class Qi_ {
 
   public static function initialize() {
     self::setup_config();
-
+    self::setup_dir();
     self::setup_post_thumbnails();
   }
 }

@@ -13,7 +13,7 @@ $vm = new PostView();
 // print_r($post);
 // print_r($vm);
 
-$vm->render( );
+$vm->render();
 
 // the_content();
 

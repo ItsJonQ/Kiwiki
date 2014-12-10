@@ -9,9 +9,11 @@ class Qi_ {
 
     $config = array(
       'theme'                   => 'qi',
+      'dir_root'                => get_theme_root(),
       'dir'                     => 'app',
       'dir_templates'           => 'templates/',
       'dir_partials'            => 'templates/partials',
+      'dir_cache'               => 'tmp/cache/mustache',
       'post_thumbnails'         => true,
       'relative_permalink'      => true
       );
@@ -21,7 +23,10 @@ class Qi_ {
   }
 
   public static function setup_dir() {
-    self::$config['dir'] = get_theme_root() . '/' . self::$config['theme'] . '/' . self::$config['dir'];
+    self::$config['dir'] = self::$config['dir_root'] . '/' . self::$config['theme'] . '/' . self::$config['dir'];
+    self::$config['dir_templates'] = Qi_::$config['dir'] . '/' . Qi_::$config['dir_templates'];
+    self::$config['dir_partials'] = Qi_::$config['dir'] . '/' . Qi_::$config['dir_partials'];
+    self::$config['dir_cache'] = self::$config['dir_root'] . '/' . self::$config['theme'] . '/' . self::$config['dir_cache'];
   }
 
   // Post Thumbnails

@@ -60,6 +60,7 @@ class QiBaseModel {
 
     if( !isset( $content ) ) {
       $content = $post->post_content;
+      $content = apply_filters( 'the_content', $content );
     }
 
     return $content;

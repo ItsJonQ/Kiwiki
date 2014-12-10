@@ -31,6 +31,27 @@ class QiBaseView {
     }
   }
 
+  public function render( $template = null, $model = null ) {
+
+    // If $template is not provided..
+    if( !isset( $template ) ) {
+      // Try to automagically load the file
+      $template = basename( $_SERVER['PHP_SELF'] );
+      $template = str_replace( ".php", "", $template );
+    }
+
+    if( !isset( $model ) ) {
+      $model = $this->model;
+    }
+
+    $m = new Mustache_Engine(array(
+      'loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/templates'),
+    ));
+
+    // Return the template via Mustache
+    echo $m->render( $template, $model );
+  }
+
   public function __construct( $model = null ) {
     self::set_model( $model );
     self::set_view();

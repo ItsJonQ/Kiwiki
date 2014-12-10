@@ -11,9 +11,9 @@ if ( have_posts() ) :
 $vm = new PostView();
 
 // print_r($post);
-print_r($vm);
+// print_r($vm);
 
-echo $vm->model->title;
+$vm->render( );
 
 // the_content();
 

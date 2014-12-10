@@ -2,6 +2,9 @@
 
   global $qi;
 
+  require 'lib/Mustache/Autoloader.php';
+  Mustache_Autoloader::register();
+
   require_once( 'config/qi.php' );
 
   // Models

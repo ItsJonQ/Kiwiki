@@ -18,12 +18,18 @@ class PostModel extends QiBaseModel {
 
     foreach( $post_categories as $cat ) {
       $cat = get_category( $cat );
-      $categories[] = array(
-        'id'            => $cat->term_id,
-        'name'          => $cat->name,
-        'slug'          => $cat->slug,
-        'permalink'     => get_category_link( $cat )
-        );
+
+      // Create a new category object
+      $category = new stdClass();
+
+      // Set category data
+      $category->id = $cat->term_id;
+      $category->name = $cat->name;
+      $category->slug = $cat->slug;
+      $category->permalink = parent::get_the_permalink( get_category_link( $cat ) );
+
+      // Push the category object to the categories array
+      $categories[] = $category;
     }
 
     return $categories;
@@ -40,14 +46,37 @@ class PostModel extends QiBaseModel {
 
     $tags = array();
 
-    foreach( $post_tags as $tag ) {
-      $tags[] = array(
-        'id'              => $tag->term_id,
-        'name'            => $tag->name,
-        'slug'            => $tag->slug,
-        'permalink'       => get_tag_link( $tag->term_id )
-      );
+    foreach( $post_tags as $t ) {
+
+      // Create a new tag object
+      $tag = new stdClass();
+
+      // Set tag data
+      $tag->id = $t->term_id;
+      $tag->name = $t->name;
+      $tag->slug = $t->slug;
+      $tag->permalink = parent::get_the_permalink( get_tag_link( $t->term_id ) );
+
+      // Push the tag object to the tags array
+      $tags[] = $tag;
+
     }
+
+    return $tags;
+  }
+
+  public function set_category() {
+    $category = self::get_category_meta();
+
+    $this->category = $category;
+
+    return $category;
+  }
+
+  public function set_tags() {
+    $tags = self::get_tag_meta();
+
+    $this->tags = $tags;
 
     return $tags;
   }
@@ -56,6 +85,9 @@ class PostModel extends QiBaseModel {
   public function __construct() {
 
     parent::__construct();
+
+    self::set_category();
+    self::set_tags();
 
   }
 

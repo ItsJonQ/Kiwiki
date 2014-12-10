@@ -9,7 +9,7 @@ class Qi_ {
 
     $config = array(
       'post_thumbnails'         => true,
-      'relative_permalink'      => false
+      'relative_permalink'      => true
       );
 
     // Setting it to Qi's config

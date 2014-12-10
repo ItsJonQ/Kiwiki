@@ -5,9 +5,12 @@
 
 class QiBaseModel {
 
-  public function get_relative_permalink( $permalink = "" ) {
-    // Remove the home url from the permalink
-    $permalink = str_replace( home_url(), "", $permalink );
+  public function get_the_permalink( $permalink = "" ) {
+
+    if( Qi_::has_relative_permalink() ) {
+      // Remove the home url from the permalink
+      $permalink = str_replace( home_url(), "", $permalink );
+    }
 
     return $permalink;
   }
@@ -36,6 +39,20 @@ class QiBaseModel {
 
     // Returning the author object
     return $author;
+  }
+
+  public function get_comment_meta() {
+    global $post;
+
+    // Creating the empty comment object
+    $comment = new stdClass();
+
+    // Setting the comment data
+    $comment->count = $post->comment_count;
+    $comment->status = $post->comment_status;
+
+    // Returning the comment object
+    return $comment;
   }
 
   public function get_content( $content = null ) {
@@ -80,12 +97,13 @@ class QiBaseModel {
     }
 
     $post_thumbnail = null;
+    $image = null;
     $post_thumbnail_id = get_post_thumbnail_id( $post->ID );
 
     if( $post_thumbnail_id ) {
 
-      // Setting the image ID
-      $post_thumbnail['id'] = $post_thumbnail_id;
+      // Creating empty image object
+      $image = new stdClass();
 
       // Getting the thumbnail meta
       $post_thumbnail = wp_get_attachment_image_src( $post_thumbnail_id, $size );
@@ -96,24 +114,15 @@ class QiBaseModel {
       if( !$post_thumbnail_alt ) {
         $post_thumbnail_alt = $this->title;
       }
-      // Setting the image alt meta info
-      $post_thumbnail['alt'] = $post_thumbnail_alt;
+
+      // Setting the image data
+      $image->url = self::get_the_permalink( $post_thumbnail[0] );
+      $image->width = $post_thumbnail[1];
+      $image->height = $post_thumbnail[2];
+      $image->alt = $post_thumbnail_alt;
     }
 
-    return $post_thumbnail;
-  }
-
-  public function get_post_thumbnail_url( $size = null ) {
-    global $post;
-
-    // Getting the thumbail meta
-    $post_thumbnail = self::get_post_thumbnail_meta( $size );
-
-    if( isset( $post_thumbnail[0] ) ) {
-      $post_thumbnail = $post_thumbnail[0];
-    }
-
-    return $post_thumbnail;
+    return $image;
   }
 
   public function get_title( $title = null ) {
@@ -134,9 +143,7 @@ class QiBaseModel {
     $permalink = get_permalink( $post->ID );
 
     // Adjust the permalink based on Qi configs
-    if( Qi_::has_relative_permalink() ) {
-      $permalink = self::get_relative_permalink( $permalink );
-    }
+    $permalink = self::get_the_permalink( $permalink );
 
     // Setting the permalink
     $this->permalink = $permalink;
@@ -144,18 +151,18 @@ class QiBaseModel {
     return $permalink;
   }
 
-  public function set_featured_image_url() {
-    $featured_image = self::get_post_thumbnail_url();
+  public function set_featured_image() {
+    $featured_image = self::get_post_thumbnail_meta();
 
-    $this->featured_image_url = $featured_image;
+    $this->featured_image = $featured_image;
 
     return $featured_image;
   }
 
-  public function set_post_thumbnail_url() {
-    $post_thumbnail = self::get_post_thumbnail_url( 'thumbnail' );
+  public function set_post_thumbnail() {
+    $post_thumbnail = self::get_post_thumbnail_meta( 'thumbnail' );
 
-    $this->post_thumbnail_url = $post_thumbnail;
+    $this->post_thumbnail = $post_thumbnail;
 
     return $post_thumbnail;
   }
@@ -168,6 +175,14 @@ class QiBaseModel {
     return $author;
   }
 
+  public function set_comments() {
+    $comment = self::get_comment_meta();
+
+    $this->comment = $comment;
+
+    return $comment;
+  }
+
   public function set_content( $content = null ) {
     $content = self::get_content( $content );
 
@@ -177,9 +192,12 @@ class QiBaseModel {
   }
 
   public function set_date( $format = null  ) {
+    global $post;
+
     $date = self::get_date( $format );
 
     $this->date = $date;
+    $this->date_utc = $post->post_date;
 
     return $date;
   }
@@ -200,6 +218,17 @@ class QiBaseModel {
     $this->id = $id;
 
     return $id;
+  }
+
+  public function set_last_modified() {
+    global $post;
+
+    $modified = $post->post_modified;
+
+    // Setting the title
+    $this->last_modified = $modified;
+
+    return $modified;
   }
 
   public function set_title( $title = null ) {
@@ -236,10 +265,12 @@ class QiBaseModel {
     self::set_author();
     self::set_content();
     self::set_excerpt();
+    self::set_comments();
+    self::set_last_modified();
 
     // Image
-    self::set_featured_image_url();
-    self::set_post_thumbnail_url();
+    self::set_featured_image();
+    self::set_post_thumbnail();
 
   }
 }

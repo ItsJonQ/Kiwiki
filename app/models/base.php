@@ -12,6 +12,32 @@ class QiBaseModel {
     return $permalink;
   }
 
+  public function get_author_meta( $id = null ) {
+    global $post;
+
+    if( !isset( $id ) ) {
+      $id = $post->post_author;
+    }
+
+    // Creating the $author empty object
+    $author = new stdClass();
+
+    // Getting the user data
+    $user_data =  get_userdata( $id );
+
+    // Setting the author data
+    $author->id = $id;
+    $author->status = $user_data->data->user_status;
+    $author->role = $user_data->roles[0];
+    $author->login = $user_data->data->user_login;
+    $author->display_name = $user_data->data->display_name;
+    $author->email = $user_data->data->user_email;
+    $author->url = $user_data->data->user_url;
+
+    // Returning the author object
+    return $author;
+  }
+
   public function get_content( $content = null ) {
     global $post;
 
@@ -134,6 +160,14 @@ class QiBaseModel {
     return $post_thumbnail;
   }
 
+  public function set_author() {
+    $author = self::get_author_meta();
+
+    $this->author = $author;
+
+    return $author;
+  }
+
   public function set_content( $content = null ) {
     $content = self::get_content( $content );
 
@@ -199,6 +233,7 @@ class QiBaseModel {
     self::set_permalink();
     self::set_title();
     self::set_date();
+    self::set_author();
     self::set_content();
     self::set_excerpt();
 
